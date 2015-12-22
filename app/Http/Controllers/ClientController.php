@@ -4,7 +4,7 @@ namespace ProjManag\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use ProjManag\Client;
+use ProjManag\Models\Client;
 use ProjManag\Http\Requests;
 use ProjManag\Http\Controllers\Controller;
 
@@ -18,7 +18,7 @@ class ClientController extends Controller
     public function index()
     {
         //
-        return \ProjManag\Client::all();
+        return \ProjManag\Models\Client::all();
     }
 
     /**
