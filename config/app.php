@@ -145,6 +145,7 @@ return [
         ProjManag\Providers\AuthServiceProvider::class,
         ProjManag\Providers\EventServiceProvider::class,
         ProjManag\Providers\RouteServiceProvider::class,
+        ProjManag\Providers\ProjManagRepositoryProvider::class,
 
     ],
 

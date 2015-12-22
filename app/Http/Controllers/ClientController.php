@@ -3,13 +3,21 @@
 namespace ProjManag\Http\Controllers;
 
 use Illuminate\Http\Request;
-
-use ProjManag\Models\Client;
-use ProjManag\Http\Requests;
-use ProjManag\Http\Controllers\Controller;
+use Mockery\CountValidator\Exception;
+use ProjManag\Repositories\ClientRepository;
 
 class ClientController extends Controller
 {
+    /**
+     * @var ClientRepository
+     */
+    private $repository;
+
+    public function __construct(ClientRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -18,7 +26,7 @@ class ClientController extends Controller
     public function index()
     {
         //
-        return \ProjManag\Models\Client::all();
+        return $this->repository->all();
     }
 
     /**
@@ -30,7 +38,8 @@ class ClientController extends Controller
     public function store(Request $request)
     {
         //
-        return Client::create($request->all());
+        return  $this->repository->create($request->all());
+            //Client::create($request->all());
     }
 
     /**
@@ -42,7 +51,13 @@ class ClientController extends Controller
     public function show($id)
     {
         //
-        return Client::find($id);
+        try{
+            return  $this->repository->find($id);
+        }catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
+            return $e->getMessage();
+        }
+
+            //Client::find($id);
     }
 
     /**
@@ -55,7 +70,7 @@ class ClientController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $client = Client::find($id);
+        $client = $this->repository->find($id);
         $client->update($request->all(),$id);
         return $client;
     }
@@ -69,6 +84,6 @@ class ClientController extends Controller
     public function destroy($id)
     {
         //
-        Client::find($id)->delete();
+        $this->repository->find($id)->delete();
     }
 }
