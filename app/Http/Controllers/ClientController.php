@@ -5,6 +5,7 @@ namespace ProjManag\Http\Controllers;
 use Illuminate\Http\Request;
 use Mockery\CountValidator\Exception;
 use ProjManag\Repositories\ClientRepository;
+use ProjManag\Services\ClientService;
 
 class ClientController extends Controller
 {
@@ -12,10 +13,20 @@ class ClientController extends Controller
      * @var ClientRepository
      */
     private $repository;
+    /**
+     * @var ClientService
+     */
+    private $service;
 
-    public function __construct(ClientRepository $repository)
+    /**
+     * ClientController constructor.
+     * @param ClientRepository $repository
+     * @param ClientService $service
+     */
+    public function __construct(ClientRepository $repository, ClientService $service)
     {
         $this->repository = $repository;
+        $this->service = $service;
     }
 
     /**
@@ -38,8 +49,7 @@ class ClientController extends Controller
     public function store(Request $request)
     {
         //
-        return  $this->repository->create($request->all());
-            //Client::create($request->all());
+        return $this->service->create($request->all());
     }
 
     /**
@@ -54,10 +64,11 @@ class ClientController extends Controller
         try{
             return  $this->repository->find($id);
         }catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
-            return $e->getMessage();
+            return [
+                'error'=>true,
+                'message'=>$e->getMessage()
+            ];
         }
-
-            //Client::find($id);
     }
 
     /**
@@ -70,9 +81,7 @@ class ClientController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $client = $this->repository->find($id);
-        $client->update($request->all(),$id);
-        return $client;
+        return $this->service->update($request->all(),$id);
     }
 
     /**
@@ -84,6 +93,6 @@ class ClientController extends Controller
     public function destroy($id)
     {
         //
-        $this->repository->find($id)->delete();
+        return $this->repository->delete($id);
     }
 }
