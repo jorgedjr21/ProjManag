@@ -3,22 +3,23 @@
 namespace ProjManag\Http\Controllers;
 
 use Illuminate\Http\Request;
-use ProjManag\Repositories\ProjectRepository;
-use ProjManag\Services\ProjectService;
+use ProjManag\Repositories\ProjectNoteRepository;
+use ProjManag\Services\ProjectNoteService;
 
-class ProjectController extends Controller
+
+class ProjectNoteController extends Controller
 {
 
     /**
-     * @var ProjectRepository
+     * @var ProjectNoteRepository
      */
     private $repository;
     /**
-     * @var ProjectService
+     * @var ProjectNoteService
      */
     private $service;
 
-    public function __construct(ProjectRepository $repository, ProjectService $service){
+    public function __construct(ProjectNoteRepository $repository, ProjectNoteService $service){
 
         $this->repository = $repository;
         $this->service = $service;
@@ -28,10 +29,10 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
         //
-        return $this->repository->with(['owner','client'])->all();
+        return $this->repository->findWhere(['project_id'=>$id]);
     }
 
     /**
@@ -52,9 +53,9 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id,$noteId)
     {
-        return $this->service->find($id);
+        return $this->service->findWhere($id,$noteId);
     }
 
     /**
@@ -64,10 +65,10 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id,$noteId)
     {
         //
-        return $this->service->update($request->all(),$id);
+        return $this->service->update($request->all(),$noteId);
     }
 
     /**
@@ -76,9 +77,9 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id,$noteId)
     {
         //
-        return $this->service->destroy($id);
+        return $this->service->destroy($noteId);
     }
 }

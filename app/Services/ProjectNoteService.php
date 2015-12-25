@@ -15,11 +15,10 @@ use Illuminate\Database\QueryException;
 
 use Prettus\Validator\Exceptions\ValidatorException;
 use ProjManag\Repositories\ClientRepository;
-use ProjManag\Repositories\ProjectRepository;
-use ProjManag\Validators\ClientValidator;
-use ProjManag\Validators\ProjectValidator;
+use ProjManag\Repositories\ProjectNoteRepository;
+use ProjManag\Validators\ProjectNoteValidator;
 
-class ProjectService
+class ProjectNoteService
 {
 
     /**
@@ -31,7 +30,7 @@ class ProjectService
      */
     protected $validator;
 
-    public function __construct(ProjectRepository $repository,ProjectValidator $validator)
+    public function __construct(ProjectNoteRepository $repository,ProjectNoteValidator $validator)
     {
         $this->repository = $repository;
         $this->validator = $validator;
@@ -59,12 +58,14 @@ class ProjectService
 
 
     /**
-     * Find a existent project
+     * Show an expecific id
      * @param $id
+     * @param $noteId
+     * @return array
      */
-    public function find($id){
+    public function findWhere($id,$noteId){
         try{
-            return $this->repository->with(['owner','client','notes'])->find($id);
+            return $this->repository->findWhere(['project_id'=>$id,'id'=>$noteId]);
         }catch(ModelNotFoundException $e){
             return ['error'=>true,'message'=>$e->getMessage()];
         }
@@ -94,7 +95,7 @@ class ProjectService
     public function destroy($id){
         try{
             $this->repository->delete($id);
-            return ['success'=>true, 'message'=>'Projeto deletado com sucesso!'];
+            return ['success'=>true, 'message'=>'Nota excluida com sucesso!'];
         }catch(ModelNotFoundException $e){
             return ['error'=>true,'message'=>$e->getMessage()];
         }catch(QueryException $e){
