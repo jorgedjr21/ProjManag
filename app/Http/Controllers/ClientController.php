@@ -88,3 +88,4 @@ class ClientController extends Controller
         return $this->service->destroy($id);
     }
 }
+

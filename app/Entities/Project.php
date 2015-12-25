@@ -32,7 +32,5 @@ class Project extends Model implements Transformable
     public function owner(){
         return $this->belongsTo(User::class);
     }
-
-
-
+    
 }
