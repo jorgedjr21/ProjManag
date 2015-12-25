@@ -9,8 +9,10 @@
 namespace ProjManag\Services;
 
 
+
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
+
 use Prettus\Validator\Exceptions\ValidatorException;
 use ProjManag\Repositories\ClientRepository;
 use ProjManag\Repositories\ProjectRepository;
@@ -35,11 +37,13 @@ class ProjectService
         $this->validator = $validator;
     }
 
+
     /**
      * Create new Project
      * @param array $data
      * @return array|mixed
      */
+
     public function create(array $data){
 
         try{
@@ -52,6 +56,7 @@ class ProjectService
                 ];
         }
     }
+
 
     /**
      * Find a existent project
@@ -71,7 +76,9 @@ class ProjectService
      * @param $id
      * @return array|mixed
      */
-    public function update(array $data, $id){
+
+    public function update(array $data,$id){
+
         try{
             $this->validator->with($data)->passesOrFail();
             return $this->repository->update($data,$id);
@@ -83,6 +90,7 @@ class ProjectService
         }
     }
 
+
     public function destroy($id){
         try{
             $this->repository->delete($id);
@@ -93,4 +101,5 @@ class ProjectService
             return ['error'=>true,'message'=>$e->getMessage()];
         }
     }
+
 }

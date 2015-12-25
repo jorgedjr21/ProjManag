@@ -16,7 +16,9 @@ class Client extends Model
         'obs'
     ];
 
-    public function projects(){
+    public function projects()
+    {
         return $this->hasMany(Project::class);
     }
 }
+
