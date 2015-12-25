@@ -43,3 +43,10 @@ $factory->define(ProjManag\Entities\Project::class, function (Faker\Generator $f
     ];
 });
 
+$factory->define(ProjManag\Entities\ProjectNote::class, function (Faker\Generator $faker) {
+    return [
+        'project_id'    => rand(1,10),
+        'title'         => $faker->word,
+        'note'          => $faker->paragraph,
+    ];
+});

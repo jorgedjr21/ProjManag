@@ -3,7 +3,6 @@
 namespace ProjManag\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Mockery\CountValidator\Exception;
 use ProjManag\Repositories\ClientRepository;
 use ProjManag\Services\ClientService;
 
@@ -61,14 +60,7 @@ class ClientController extends Controller
     public function show($id)
     {
         //
-        try{
-            return  $this->repository->find($id);
-        }catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
-            return [
-                'error'=>true,
-                'message'=>$e->getMessage()
-            ];
-        }
+        return $this->service->find($id);
     }
 
     /**
@@ -93,6 +85,6 @@ class ClientController extends Controller
     public function destroy($id)
     {
         //
-        return $this->repository->delete($id);
+        return $this->service->destroy($id);
     }
 }

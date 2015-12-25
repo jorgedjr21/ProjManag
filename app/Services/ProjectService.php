@@ -44,7 +44,6 @@ class ProjectService
                     'message'=>$e->getMessageBag()
                 ];
         }
-
     }
 
     public function update(array $data,$id){
