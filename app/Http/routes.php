@@ -15,8 +15,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('client','ClientController@index');
+Route::post('oauth/access_token',function(){
+    return Response::json(Authorizer::issueAccessToken());
+});
 
+Route::get('client',['uses'=>'ClientController@index','middleware'=>'oauth']);
 Route::post('client','ClientController@store');
 Route::put('client/{id}','ClientController@update');
 Route::delete('client/{id}','ClientController@destroy');
