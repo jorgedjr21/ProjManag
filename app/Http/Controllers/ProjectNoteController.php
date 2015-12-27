@@ -63,9 +63,10 @@ class ProjectNoteController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
+     * @param int $noteId
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id,$noteId)
+    public function update(Request $request,$id,$noteId)
     {
         //
         return $this->service->update($request->all(),$noteId);
@@ -75,6 +76,7 @@ class ProjectNoteController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
+     * @param int $noteId
      * @return \Illuminate\Http\Response
      */
     public function destroy($id,$noteId)
