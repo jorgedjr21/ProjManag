@@ -64,7 +64,7 @@ class ProjectService
      */
     public function find($id){
         try{
-            return $this->repository->with(['owner','client','notes','tasks'])->find($id);
+            return $this->repository->with(['owner','client','members','notes','tasks'])->find($id);
         }catch(ModelNotFoundException $e){
             return ['error'=>true,'message'=>$e->getMessage()];
         }

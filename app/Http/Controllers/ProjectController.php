@@ -3,6 +3,7 @@
 namespace ProjManag\Http\Controllers;
 
 use Illuminate\Http\Request;
+use LucaDegasperi\OAuth2Server\Facades\Authorizer;
 use ProjManag\Repositories\ProjectRepository;
 use ProjManag\Services\ProjectService;
 
@@ -31,7 +32,8 @@ class ProjectController extends Controller
     public function index()
     {
         //
-        return $this->repository->with(['owner','client'])->all();
+
+        return $this->repository->with(['client','members','notes','tasks'])->findWhere(['owner_id'=>Authorizer::getResourceOwnerId()]);
     }
 
     /**
@@ -54,6 +56,9 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
+        if($this->checkProjectOwner($id) == false){
+            return ['error'=>true,'message'=>'Access forbidden'];
+        }
         return $this->service->find($id);
     }
 
@@ -67,6 +72,9 @@ class ProjectController extends Controller
     public function update(Request $request, $id)
     {
         //
+        if($this->checkProjectOwner($id) == false){
+            return ['error'=>true,'message'=>'Access forbidden'];
+        }
         return $this->service->update($request->all(),$id);
     }
 
@@ -79,6 +87,15 @@ class ProjectController extends Controller
     public function destroy($id)
     {
         //
+        if($this->checkProjectOwner($id) == false){
+            return ['error'=>true,'message'=>'Access forbidden'];
+        }
         return $this->service->destroy($id);
+    }
+
+    private function checkProjectOwner($projectId)
+    {
+        $userId = Authorizer::getResourceOwnerId();
+        return $this->repository->isOwner($projectId, $userId);
     }
 }
