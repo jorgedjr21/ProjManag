@@ -16,22 +16,24 @@ use Illuminate\Database\QueryException;
 use Prettus\Validator\Exceptions\ValidatorException;
 use ProjManag\Repositories\ClientRepository;
 use ProjManag\Repositories\ProjectRepository;
+use ProjManag\Repositories\ProjectTaskRepository;
 use ProjManag\Validators\ClientValidator;
+use ProjManag\Validators\ProjectTaskValidator;
 use ProjManag\Validators\ProjectValidator;
 
-class ProjectService
+class ProjectTaskService
 {
 
     /**
-     * @var ClientRepository
+     * @var ProjectTaskRepository
      */
     protected $repository;
     /**
-     * @var ClientValidator
+     * @var ProjectTaskValidator
      */
     protected $validator;
 
-    public function __construct(ProjectRepository $repository,ProjectValidator $validator)
+    public function __construct(ProjectTaskRepository $repository,ProjectTaskValidator $validator)
     {
         $this->repository = $repository;
         $this->validator = $validator;
@@ -59,12 +61,12 @@ class ProjectService
 
 
     /**
-     * Find a existent project
+     * Find a existent project task
      * @param $id
      */
-    public function find($id){
+    public function findWhere($id,$taskId){
         try{
-            return $this->repository->with(['owner','client','notes','tasks'])->find($id);
+            return $this->repository->findWhere(['project_id'=>$id,'id'=>$taskId]);
         }catch(ModelNotFoundException $e){
             return ['error'=>true,'message'=>$e->getMessage()];
         }
@@ -94,7 +96,7 @@ class ProjectService
     public function destroy($id){
         try{
             $this->repository->delete($id);
-            return ['success'=>true, 'message'=>'Projeto deletado com sucesso!'];
+            return ['success'=>true, 'message'=>'Tarefa deletada com sucesso!'];
         }catch(ModelNotFoundException $e){
             return ['error'=>true,'message'=>$e->getMessage()];
         }catch(QueryException $e){

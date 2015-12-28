@@ -20,7 +20,13 @@ class DatabaseSeeder extends Seeder
         $this->call(ClientTableSeeder::class);
         $this->call(ProjectTableSeeder::class);
         $this->call(ProjectNoteTableSeeder::class);
+        $this->call(ProjectTaskTableSeeder::class);
 
+        DB::table('oauth_clients')->insert([
+            'id'=>'appid1',
+            'secret'=>'secret',
+            'name'=>'AngularAPP'
+        ]);
         Model::reguard();
     }
 }
