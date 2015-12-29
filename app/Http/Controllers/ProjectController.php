@@ -93,6 +93,27 @@ class ProjectController extends Controller
         return $this->service->destroy($id);
     }
 
+    public function members($id){
+        if($this->checkProjectPermissions($id) == false){
+            return ['error'=>true,'message'=>'Access forbidden'];
+        }
+        return $this->service->getProjectMembers($id);
+    }
+
+    public function addMember(Request $request,$id){
+        if($this->checkProjectOwner($id) == false){
+            return ['error'=>true,'message'=>'Access forbidden'];
+        }
+        return $this->service->addMember($request->member_id,$id);
+    }
+
+    public function removeMember($id,$memberId){
+        if($this->checkProjectOwner($id) == false){
+            return ['error'=>true,'message'=>'Access forbidden'];
+        }
+        return $this->service->removeMember($id,$memberId);
+    }
+
     private function checkProjectOwner($projectId)
     {
         $userId = Authorizer::getResourceOwnerId();
@@ -102,7 +123,7 @@ class ProjectController extends Controller
     private function checkProjectMember($projectId)
     {
         $userId = Authorizer::getResourceOwnerId();
-        return $this->repository->hasMember($projectId, $userId);
+        return $this->repository->isMember($projectId, $userId);
     }
 
     private function checkProjectPermissions($projectId)

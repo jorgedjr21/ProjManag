@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 
 use Prettus\Validator\Exceptions\ValidatorException;
+use ProjManag\Entities\ProjectMember;
 use ProjManag\Repositories\ClientRepository;
 use ProjManag\Repositories\ProjectRepository;
 use ProjManag\Validators\ClientValidator;
@@ -97,6 +98,32 @@ class ProjectService
             return ['success'=>true, 'message'=>'Projeto deletado com sucesso!'];
         }catch(ModelNotFoundException $e){
             return ['error'=>true,'message'=>$e->getMessage()];
+        }catch(QueryException $e){
+            return ['error'=>true,'message'=>$e->getMessage()];
+        }
+    }
+
+    public function getProjectMembers($projectId){
+        try{
+            return $this->repository->with(['members'])->find($projectId);
+        }catch(ModelNotFoundException $e){
+            return ['error'=>true,'message'=>$e->getMessage()];
+        }
+    }
+
+    public function addMember($memberId,$projectId){
+        try{
+            ProjectMember::create(['project_id'=>$projectId,'member_id'=>$memberId]);
+            return ['success'=>true,'message'=>'Membro adicionado com sucesso!'];
+        }catch(QueryException $e){
+            return ['error'=>true,'message'=>$e->getMessage()];
+        }
+    }
+
+    public function removeMember($projectId,$memberId){
+        try{
+            ProjectMember::where(['project_id'=>$projectId,'member_id'=>$memberId])->delete();
+            return ['success'=>true,'message'=>'Membro exluido com sucesso'];
         }catch(QueryException $e){
             return ['error'=>true,'message'=>$e->getMessage()];
         }
