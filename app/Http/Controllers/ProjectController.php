@@ -131,7 +131,6 @@ class ProjectController extends Controller
         if($this->checkProjectOwner($projectId) or $this->checkProjectMember($projectId)) {
             return true;
         }
-
         return false;
     }
 }

@@ -12,30 +12,48 @@ namespace ProjManag\Services;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
-
+use Illuminate\Support\Facades\Request;
+use Mockery\CountValidator\Exception;
 use Prettus\Validator\Exceptions\ValidatorException;
-use ProjManag\Entities\ProjectMember;
-use ProjManag\Repositories\ClientRepository;
 use ProjManag\Repositories\ProjectRepository;
-use ProjManag\Validators\ClientValidator;
+use ProjManag\Validators\ProjectFileValidator;
 use ProjManag\Validators\ProjectValidator;
+
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Contracts\Filesystem\Factory as Storage;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ProjectService
 {
 
     /**
-     * @var ClientRepository
+     * @var ProjectValidator
      */
     protected $repository;
     /**
-     * @var ClientValidator
+     * @var ProjectValidator
      */
     protected $validator;
+    /**
+     * @var Filesystem
+     */
+    private $filesystem;
+    /**
+     * @var Storage
+     */
+    private $storage;
+    /**
+     * @var ProjectFileValidator
+     */
+    private $projectFileValidator;
 
-    public function __construct(ProjectRepository $repository,ProjectValidator $validator)
+    public function __construct(ProjectRepository $repository,ProjectValidator $validator, Filesystem $filesystem,Storage $storage, ProjectFileValidator $projectFileValidator)
     {
         $this->repository = $repository;
         $this->validator = $validator;
+        $this->filesystem = $filesystem;
+        $this->storage = $storage;
+        $this->projectFileValidator = $projectFileValidator;
     }
 
 
@@ -58,6 +76,32 @@ class ProjectService
         }
     }
 
+    public function createFile(UploadedFile $file,array $data){
+        try {
+            $this->projectFileValidator->with($data)->passesOrFail();
+
+            $extension = $file->getClientOriginalExtension();
+            $data['extension'] = $extension;
+            $project = $this->repository->skipPresenter()->find($data['project_id']);
+            $projectFile = $project->files()->create($data);
+            $this->storage->put($projectFile->id . '.' . $extension, $this->filesystem->get($file));
+            return ['success'=>true,'message'=>'Arquivo enviado com sucesso!'];
+        }catch(ValidatorException $e){
+            return ['error'=>true,'message'=>$e->getMessageBag()];
+        }
+    }
+
+    public function showFiles($projectId){
+        return $this->repository->skipPresenter()->with(['files'])->find($projectId);
+    }
+
+    public function deleteFile($projectId,$fileId){
+        $project = $this->repository->skipPresenter()->find($projectId);
+        $file = $project->files()->where(['project_id'=>$projectId,'id'=>$fileId])->first();
+        $this->storage->delete($file->id.'.'.$file->extension);
+        $file->delete();
+        return ['success'=>true,'message'=>'Arquivo excluido com sucesso'];
+    }
 
     /**
      * Find a existent project
