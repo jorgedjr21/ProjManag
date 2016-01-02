@@ -15,12 +15,14 @@ use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Request;
 use Mockery\CountValidator\Exception;
 use Prettus\Validator\Exceptions\ValidatorException;
+use ProjManag\Entities\ProjectMember;
 use ProjManag\Repositories\ProjectRepository;
 use ProjManag\Validators\ProjectFileValidator;
 use ProjManag\Validators\ProjectValidator;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Contracts\Filesystem\Factory as Storage;
+use Psy\Exception\ErrorException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ProjectService
@@ -96,11 +98,15 @@ class ProjectService
     }
 
     public function deleteFile($projectId,$fileId){
-        $project = $this->repository->skipPresenter()->find($projectId);
-        $file = $project->files()->where(['project_id'=>$projectId,'id'=>$fileId])->first();
-        $this->storage->delete($file->id.'.'.$file->extension);
-        $file->delete();
-        return ['success'=>true,'message'=>'Arquivo excluido com sucesso'];
+        try {
+            $project = $this->repository->skipPresenter()->find($projectId);
+            $file = $project->files()->where(['project_id' => $projectId, 'id' => $fileId])->first();
+            $this->storage->delete($file->id . '.' . $file->extension);
+            $file->delete();
+            return ['success' => true, 'message' => 'Arquivo excluido com sucesso'];
+        }catch(\ErrorException $e){
+            return ['error'=>true,'message'=>$e->getMessage()];
+        }
     }
 
     /**
