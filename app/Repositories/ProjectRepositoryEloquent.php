@@ -6,6 +6,7 @@ use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use ProjManag\Repositories\ProjectRepository;
 use ProjManag\Entities\Project;
+use ProjManag\Presenters\ProjectPresenter;
 
 /**
  * Class ProjectRepositoryEloquent
@@ -33,14 +34,14 @@ class ProjectRepositoryEloquent extends BaseRepository implements ProjectReposit
 
     public function isOwner($projectId, $userId)
     {
-        if(count($this->findWhere(['id'=>$projectId,'owner_id'=>$userId]))){
+        if(count($this->skipPresenter()->findWhere(['id'=>$projectId,'owner_id'=>$userId]))){
             return true;
         }
         return false;
     }
 
     public function isMember($projectId,$memberId){
-        $project = $this->find($projectId);
+        $project = $this->skipPresenter()->find($projectId);
 
         foreach($project->members as $member){
             if($member->id == $memberId){
@@ -49,6 +50,11 @@ class ProjectRepositoryEloquent extends BaseRepository implements ProjectReposit
         }
 
         return false;
+    }
+
+
+    public function presenter(){
+        return ProjectPresenter::class;
     }
 
 }
