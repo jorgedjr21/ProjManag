@@ -50,12 +50,18 @@ class ProjectTaskService
 
         try{
             $this->validator->with($data)->passesOrFail();
-            return $this->repository->create($data);
+            $this->repository->create($data);
+            return ['success'=>true,'message'=>'Tarefa inserida com sucesso!'];
         }catch(ValidatorException $e){
                 return [
                     'error'=>true,
                     'message'=>$e->getMessageBag()
                 ];
+        }catch(QueryException $e){
+            return [
+                'error'=>true,
+                'message'=>$e->getMessage()
+            ];
         }
     }
 
@@ -83,11 +89,17 @@ class ProjectTaskService
 
         try{
             $this->validator->with($data)->passesOrFail();
-            return $this->repository->update($data,$id);
+            $this->repository->update($data,$id);
+            return ['success'=>true,'message'=>'Tarefa atualizada com sucesso!'];
         }catch(ValidatorException $e){
             return [
                 'error'=>true,
                 'message'=>$e->getMessageBag()
+            ];
+        }catch(QueryException $e){
+            return [
+                'error'=>true,
+                'message'=>$e->getMessage()
             ];
         }
     }
