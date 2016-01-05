@@ -3,5 +3,6 @@
 Homestead.yaml
 Homestead.json
 .env
-/.idea/workspace.xml
+.idea/workspace.xml
+.idea/
 /resources/bower_components
