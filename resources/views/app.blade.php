@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Laravel</title>
+    <title>Project Manager</title>
     @if(Config::get('app.debug'))
         <link rel="stylesheet" href="{{asset('build/css/vendor/bootstrap.min.css')}}">
         <link rel="stylesheet" href="{{asset('build/css/vendor/bootstrap-theme.min.css')}}">
@@ -80,8 +80,16 @@
     <script src="{{asset('build/js/vendor/angular-oauth2.min.js')}}"></script>
 
     <script src="{{asset('build/js/app.js')}}"></script>
+
+    <!-- CONTROLLERS -->
     <script src="{{asset('build/js/controllers/home.js')}}"></script>
     <script src="{{asset('build/js/controllers/login.js')}}"></script>
+    <script src="{{asset('build/js/controllers/client/clientList.js')}}"></script>
+    <script src="{{asset('build/js/controllers/client/clientNew.js')}}"></script>
+
+    <!-- SERVICES -->
+    <script src="{{asset('build/js/services/client.js')}}"></script>
+
 @else
     <script src="{{elixir('js/all.js')}}"></script>
 @endif
